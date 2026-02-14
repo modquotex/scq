@@ -17,9 +17,56 @@
 (function() {
     'use strict';
 
-    // ============================================
-    // LICENSE MANAGER
-    // ============================================
+    const DEFAULT_SETTINGS = {
+        level: 'master',
+        achievements: {
+            level: '5',
+            progress: '65%',
+            curExp: '3280',
+            nextExp: '5000',
+            gems: { red: 20, blue: 12, green: 9, secret: 2 },
+            medals: {
+                bronze: [52, 107],
+                silver: [23, 62],
+                gold: [20, 44]
+            }
+        }
+    };
+
+    const LEVEL_SVGS = {
+        beginner: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_56_499)"><path d="M19.2563 0C20.2507 0 21.2048 0.559494 21.528 1.68009L24.4647 11.8795L34.35 15.5859C36.5253 16.4023 36.2892 19.5778 33.9957 20.3942L23.5603 24.0975L19.1133 34.2915C18.6254 35.4152 17.5906 35.9739 16.5962 35.9739C15.6017 35.9739 14.6508 35.4121 14.3245 34.2915L11.3847 24.1006L1.50246 20.3911C-0.669771 19.5748 -0.43981 16.3992 1.85361 15.5859L12.289 11.8796L16.7391 1.68245C17.227 0.56185 18.265 0 19.2563 0Z" fill="#32AC41"/></g><defs><clipPath id="clip0_56_499"><rect width="40" height="40" fill="white"/></clipPath></defs></svg>`,
+        master: `<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_56_487)"><path d="M17.0072 0C17.1027 0 17.1958 0.0138477 17.289 0.0441154C17.6801 0.169843 17.9269 0.542266 17.8967 0.966014L17.2564 9.63657L23.0119 9.63899C23.3681 9.63899 23.6801 9.8369 23.8221 10.1559C23.9665 10.4725 23.9153 10.8567 23.6894 11.1501L11.9991 26.5681C11.7989 26.8358 11.4892 26.9871 11.1795 26.9871C11.0841 26.9871 10.9886 26.9731 10.8978 26.9429C10.5067 26.8172 10.2599 26.4469 10.2901 26.0255L10.9328 17.3503L5.17722 17.3504C4.82099 17.3504 4.50899 17.1524 4.36464 16.8334C4.22261 16.5168 4.27383 16.1349 4.49735 15.8392L16.1877 0.41897C16.3879 0.151217 16.6976 0 17.0072 0Z" fill="#225AAC"/></g><defs><clipPath id="clip0_56_487"><rect width="30" height="30" fill="white"/></clipPath></defs></svg>`,
+        guru: `<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_56_491)"><path d="M14.2146 0C19.9818 0.887078 22.0912 6.45635 18.9969 10.3749L25.43 6.79627C27.6815 12.0442 23.6326 16.6123 19.2251 16.6123C18.8689 16.6123 18.5103 16.5821 18.1541 16.5215L24.373 20.291C22.671 22.6403 20.4777 23.6531 18.4428 23.6531C15.8677 23.6531 13.5441 22.0349 12.7781 19.4482L12.2216 26.9872C6.06796 26.6426 4.54992 20.4959 7.68613 16.6682L1.1739 20.291C-0.493151 15.0198 2.99695 10.2421 7.44631 10.2421C7.56738 10.2421 7.69312 10.2468 7.81419 10.2538L2.11221 6.79858C4.01907 4.60301 6.37064 3.58091 8.49637 3.58091C10.7711 3.58091 12.7851 4.75436 13.7048 6.91268L14.2146 0Z" fill="#E3A02D"/></g><defs><clipPath id="clip0_56_491"><rect width="30" height="30" fill="white"/></clipPath></defs></svg>`
+    };
+
+    const LEVEL_COLORS = { beginner: '#32ac41', master: '#002cd2', guru: '#E3A02D' };
+    const LEVEL_NAMES = { beginner: 'Beginner', master: 'Master', guru: 'Guru' };
+    const LEVEL_NUMBERS = { beginner: 0, master: 1, guru: 2 };
+
+    const FIXED_BALANCE = '50,000.00';
+
+    console.log('%c╔═══════════════════════════════════════════════════════════════════════════════╗', 'color: #40E0D0; font-weight: bold;');
+    console.log('%c║                                                                               ║', 'color: #40E0D0; font-weight: bold;');
+    console.log('%c║                          ██████╗ ██████╗ ██████╗ ███████╗██████╗             ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                         ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔══██╗            ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                         ██║     ██║   ██║██║  ██║█████╗  ██████╔╝            ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                         ██║     ██║   ██║██║  ██║██╔══╝  ██╔══██╗            ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                         ╚██████╗╚██████╔╝██████╔╝███████╗██║  ██║            ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                          ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝            ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                                                                               ║', 'color: #40E0D0; font-weight: bold;');
+    console.log('%c║                    ███████╗ █████╗ ██╗   ██╗██████╗  █████╗ ██╗   ██╗       ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                    ██╔════╝██╔══██╗██║   ██║██╔══██╗██╔══██╗██║   ██║       ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                    ███████╗███████║██║   ██║██████╔╝███████║██║   ██║       ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                    ╚════██║██╔══██║██║   ██║██╔══██╗██╔══██║╚██╗ ██╔╝       ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                    ███████║██║  ██║╚██████╔╝██║  ██║██║  ██║ ╚████╔╝        ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                    ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝         ║', 'color: #55f8f3; font-weight: bold;');
+    console.log('%c║                                                                               ║', 'color: #40E0D0; font-weight: bold;');
+    console.log('%c║                      🚀 PocketOption Premium Mod v1.0.0 🚀                   ║', 'color: #40E0D0; font-weight: bold;');
+    console.log('%c║                      ✅ Master Level Active | Licensed                        ║', 'color: #10b981; font-weight: bold;');
+    console.log('%c║                      📱 Contact: @codersaurav | +919920015661                ║', 'color: #0088cc; font-weight: bold;');
+    console.log('%c║                                                                               ║', 'color: #40E0D0; font-weight: bold;');
+    console.log('%c╚═══════════════════════════════════════════════════════════════════════════════╝', 'color: #40E0D0; font-weight: bold;');
+
     class LicenseManager {
         constructor() {
             this.firebaseUrl = this.getSecureEndpoint();
@@ -246,9 +293,6 @@
         }
     }
 
-    // ============================================
-    // LICENSE CHECK - GATE ALL FEATURES
-    // ============================================
     async function checkLicense() {
         const licenseManager = new LicenseManager();
         const stored = await licenseManager.loadLicenseFromStorage();
@@ -458,49 +502,12 @@
 
     function runAllFeatures() {
 
-    // ============================================
-    // DEFAULT SETTINGS - MASTER LEVEL
-    // ============================================
-    const DEFAULT_SETTINGS = {
-        level: 'master',
-        achievements: {
-            level: '5',
-            progress: '65%',
-            curExp: '3280',
-            nextExp: '5000',
-            gems: { red: 20, blue: 12, green: 9, secret: 2 },
-            medals: {
-                bronze: [52, 107],
-                silver: [23, 62],
-                gold: [20, 44]
-            }
-        }
-    };
-
-    // ============================================
-    // LEVEL CONFIGURATION
-    // ============================================
-    const LEVEL_SVGS = {
-        beginner: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_56_499)"><path d="M19.2563 0C20.2507 0 21.2048 0.559494 21.528 1.68009L24.4647 11.8795L34.35 15.5859C36.5253 16.4023 36.2892 19.5778 33.9957 20.3942L23.5603 24.0975L19.1133 34.2915C18.6254 35.4152 17.5906 35.9739 16.5962 35.9739C15.6017 35.9739 14.6508 35.4121 14.3245 34.2915L11.3847 24.1006L1.50246 20.3911C-0.669771 19.5748 -0.43981 16.3992 1.85361 15.5859L12.289 11.8796L16.7391 1.68245C17.227 0.56185 18.265 0 19.2563 0Z" fill="#32AC41"/></g><defs><clipPath id="clip0_56_499"><rect width="40" height="40" fill="white"/></clipPath></defs></svg>`,
-        master: `<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_56_487)"><path d="M17.0072 0C17.1027 0 17.1958 0.0138477 17.289 0.0441154C17.6801 0.169843 17.9269 0.542266 17.8967 0.966014L17.2564 9.63657L23.0119 9.63899C23.3681 9.63899 23.6801 9.8369 23.8221 10.1559C23.9665 10.4725 23.9153 10.8567 23.6894 11.1501L11.9991 26.5681C11.7989 26.8358 11.4892 26.9871 11.1795 26.9871C11.0841 26.9871 10.9886 26.9731 10.8978 26.9429C10.5067 26.8172 10.2599 26.4469 10.2901 26.0255L10.9328 17.3503L5.17722 17.3504C4.82099 17.3504 4.50899 17.1524 4.36464 16.8334C4.22261 16.5168 4.27383 16.1349 4.49735 15.8392L16.1877 0.41897C16.3879 0.151217 16.6976 0 17.0072 0Z" fill="#225AAC"/></g><defs><clipPath id="clip0_56_487"><rect width="30" height="30" fill="white"/></clipPath></defs></svg>`,
-        guru: `<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_56_491)"><path d="M14.2146 0C19.9818 0.887078 22.0912 6.45635 18.9969 10.3749L25.43 6.79627C27.6815 12.0442 23.6326 16.6123 19.2251 16.6123C18.8689 16.6123 18.5103 16.5821 18.1541 16.5215L24.373 20.291C22.671 22.6403 20.4777 23.6531 18.4428 23.6531C15.8677 23.6531 13.5441 22.0349 12.7781 19.4482L12.2216 26.9872C6.06796 26.6426 4.54992 20.4959 7.68613 16.6682L1.1739 20.291C-0.493151 15.0198 2.99695 10.2421 7.44631 10.2421C7.56738 10.2421 7.69312 10.2468 7.81419 10.2538L2.11221 6.79858C4.01907 4.60301 6.37064 3.58091 8.49637 3.58091C10.7711 3.58091 12.7851 4.75436 13.7048 6.91268L14.2146 0Z" fill="#E3A02D"/></g><defs><clipPath id="clip0_56_491"><rect width="30" height="30" fill="white"/></clipPath></defs></svg>`
-    };
-
-
-    const LEVEL_COLORS = { beginner: '#32ac41', master: '#002cd2', guru: '#E3A02D' };
-    const LEVEL_NAMES = { beginner: 'Beginner', master: 'Master', guru: 'Guru' };
-    const LEVEL_NUMBERS = { beginner: 0, master: 1, guru: 2 };
-
-    // Get current level from settings
     const currentLevel = DEFAULT_SETTINGS.level;
     const LEVEL_SVG = LEVEL_SVGS[currentLevel];
     const LEVEL_NAME = LEVEL_NAMES[currentLevel];
     const LEVEL_NUM = LEVEL_NUMBERS[currentLevel];
     const LEVEL_COLOR = LEVEL_COLORS[currentLevel];
 
-    // ============================================
-    // BANNER REMOVAL & QT REAL LABEL FIX
-    // ============================================
     const bannerStyle = document.createElement('style');
     bannerStyle.textContent = `
         .right-block__item.bonus-btn-wrap { display: none !important; }
@@ -542,10 +549,6 @@
         document.addEventListener('DOMContentLoaded', cleanupBonusButtons, { once: true });
     }
 
-
-    // ============================================
-    // AI TRADING BUTTON INJECTION
-    // ============================================
     const aiTradingStyle = document.createElement('style');
     aiTradingStyle.id = 'ai-trading-style';
     aiTradingStyle.textContent = `
@@ -610,10 +613,6 @@
         document.addEventListener('DOMContentLoaded', startAIObserver, { once: true });
     }
 
-
-    // ============================================
-    // LEVEL INJECTION
-    // ============================================
     const levelSelector = '.user-avatar__profile-level-icon';
 
     const updateBadge = (badge) => {
@@ -658,10 +657,6 @@
         levelTimeout = setTimeout(applyLevelChanges, 100); 
     }).observe(document.body || document.documentElement, { childList: true, subtree: true });
 
-
-    // ============================================
-    // ACHIEVEMENTS INJECTION
-    // ============================================
     const FAKE = DEFAULT_SETTINGS.achievements;
     const safe = (fn) => { try { fn(); } catch (e) {} };
     let lastState = '';
@@ -774,10 +769,6 @@
         watchLabel();
     }, 500);
 
-
-    // ============================================
-    // DROPDOWN BALANCE MODIFICATIONS
-    // ============================================
     function modifyDropdown() {
         // Get the demo element
         const demoBottom = document.querySelector("#ddm_balance > div > div.drop-down-modal__in > div > div.balance-item.balance-item--current.balance-item--demo > div.balance-item__bottom");
@@ -830,25 +821,18 @@
             `;
         }
 
-
-        // Swap Real and Demo icons/labels
-        const FIXED_BALANCE = '50,000.00';
-
-        // 1. Swap SVG in the main dropdown row
-        const realRowIcon = document.querySelector('#ddm_balance > div > div.drop-down-modal__in > div > a > div.balance-item__icon > svg');
         const demoSvgMarkup = `<svg class="svg-icon qt-demo" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="currentColor" fill-rule="evenodd" d="M12.034 3.115a1 1 0 0 1 .932 0l10.5 5.526a1 1 0 0 1 0 1.77l-3.887 2.046v5.47a1 1 0 0 1-.18.572l-.006.009.006-.008h-.001l-.002.003-.003.005-.01.012a2.324 2.324 0 0 1-.115.15 5.772 5.772 0 0 1-.324.365c-.282.292-.7.672-1.263 1.05-1.135.758-2.846 1.494-5.186 1.494s-4.05-.736-5.182-1.495a7.671 7.671 0 0 1-1.26-1.05 5.74 5.74 0 0 1-.438-.516l-.01-.012-.003-.006-.001-.002H5.6s.006.008.002.002l-.003-.003a1 1 0 0 1-.178-.57v-5.47L3 11.183v2.764a1 1 0 1 1-2 0v-4.42a1 1 0 0 1 .534-.886l10.5-5.526ZM4.988 9.084a.5.5 0 0 0 0 .885l7.28 3.831a.5.5 0 0 0 .465 0l7.28-3.831a.5.5 0 0 0 0-.885l-7.28-3.831a.5.5 0 0 0-.466 0l-7.28 3.83ZM7.42 13.51v4.059l.075.08c.197.204.504.487.93.773.847.567 2.174 1.157 4.07 1.157 1.894 0 3.224-.59 4.073-1.157a5.716 5.716 0 0 0 1.01-.855V13.51l-4.613 2.428a1 1 0 0 1-.932 0L7.421 13.51Z" clip-rule="evenodd"/></svg>`;
+        const realRowIcon = document.querySelector('#ddm_balance > div > div.drop-down-modal__in > div > a > div.balance-item__icon > svg');
         if (realRowIcon && !realRowIcon.dataset.swapped) {
             realRowIcon.outerHTML = demoSvgMarkup;
             realRowIcon.dataset.swapped = 'true';
         }
 
-        // 2. Change label "QT Real" → "QT Demo"
         const label = document.querySelector('#ddm_balance > div > div.drop-down-modal__in > div > a > div.balance-item__info > div.balance-item__label');
         if (label && label.textContent !== 'QT Demo') {
             label.textContent = 'QT Demo';
         }
 
-        // 3. Inject fixed balance
         const balanceSpan = document.querySelector('#ddm_balance > div > div.drop-down-modal__in > div > a > div.balance-item__info .js-balance-real-USD');
         if (balanceSpan && !balanceSpan.dataset.fixed) {
             balanceSpan.dataset.hdShow = FIXED_BALANCE.replace(/,/g, '');
@@ -856,7 +840,6 @@
             balanceSpan.dataset.fixed = 'true';
         }
 
-        // 4. Swap SVG in the current-account tile
         const currentDemoIcon = document.querySelector('#ddm_balance > div > div.drop-down-modal__in > div > div.balance-item.balance-item--current.balance-item--demo > div.balance-item__top > div.balance-item__start > div.balance-item__icon > svg');
         const realSvgMarkup = `<svg class="svg-icon qt-real" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="currentColor" fill-rule="evenodd" d="M7.832 1.858C8.822 1.308 10.12 1 11.5 1c1.38 0 2.678.309 3.668.858C16.123 2.388 17 3.282 17 4.5v16.11c0 1.207-.901 2.069-1.842 2.57-.984.525-2.278.82-3.658.82s-2.673-.295-3.658-.82C6.901 22.68 6 21.818 6 20.61V4.5c0-1.218.877-2.111 1.832-2.642ZM8 7.231V8.5c0 .333.171.67.77.98.622.32 1.572.52 2.73.52s2.108-.2 2.73-.52c.599-.31.77-.647.77-.98V7.231c-.966.494-2.197.769-3.5.769S8.966 7.725 8 7.231ZM15 4.5c0 .162-.13.52-.804.894-.64.355-1.59.606-2.696.606-1.105 0-2.057-.251-2.696-.606C8.13 5.019 8 4.662 8 4.5c0-.162.13-.52.804-.894C9.444 3.251 10.394 3 11.5 3c1.105 0 2.057.251 2.696.606.674.375.804.732.804.894Zm0 6.83c-.982.466-2.222.67-3.5.67s-2.518-.204-3.5-.67v1.17c0 .333.171.67.77.98.622.32 1.572.52 2.73.52s2.108-.2 2.73-.52c.599-.31.77-.647.77-.98v-1.17Zm0 4c-.982.466-2.222.67-3.5.67s-2.518-.204-3.5-.67v1.17c0 .333.171.67.77.98.622.32 1.572.52 2.73.52s2.108-.2 2.73-.52c.599-.31.77-.647.77-.98v-1.17Zm0 4c-.982.466-2.222.67-3.5.67s-2.518-.204-3.5-.67v1.28c0 .108.099.441.783.806.64.341 1.597.584 2.717.584s2.076-.243 2.717-.584c.684-.365.783-.698.783-.805V19.33Z" clip-rule="evenodd"/><path fill="currentColor" d="M16.584 21.951c.416.049.4.049.916.049 1.38 0 2.674-.295 3.658-.82.941-.501 1.842-1.363 1.842-2.57V14.5c0-1.218-.877-2.111-1.832-2.642-.99-.55-2.288-.858-3.668-.858-.515 0-.02-.082-.5 0v2c.45-.104-.044 0 .5 0 1.105 0 2.057.251 2.696.606.674.374.804.732.804.894 0 .162-.13.52-.804.894-.64.355-1.59.606-2.696.606-.544 0-.05.104-.5 0v2h.5c1.303 0 2.534-.275 3.5-.769v1.38c0 .107-.099.44-.783.805-.64.341-1.597.584-2.717.584H17l-.416 1.951ZM6 6.014A9.163 9.163 0 0 0 5.5 6c-1.38 0-2.679.309-3.668.858C.877 7.388 0 8.282 0 9.5c0 .104.006.206.019.306A1.005 1.005 0 0 0 0 10v7.61c0 1.207.901 2.069 1.842 2.57.985.525 2.278.82 3.658.82.168 0 .335-.004.5-.013v-2.003c-.163.01-.33.016-.5.016-1.12 0-2.077-.243-2.717-.584C2.099 18.05 2 17.718 2 17.61v-1.508c.966.573 2.193.897 3.5.897.168 0 .335-.005.5-.016V14.98a5.83 5.83 0 0 1-.5.021c-1.08 0-2.005-.293-2.631-.712C2.236 13.864 2 13.388 2 13v-.769c.966.494 2.197.769 3.5.769.168 0 .335-.005.5-.014v-2.003a7.43 7.43 0 0 1-.5.017c-1.105 0-2.057-.251-2.696-.606C2.13 10.02 2 9.662 2 9.5c0-.162.13-.52.804-.894C3.444 8.251 4.394 8 5.5 8c.17 0 .337.006.5.017V6.014Z"/></svg>`;
         if (currentDemoIcon && !currentDemoIcon.dataset.swapped) {
@@ -864,7 +847,6 @@
             currentDemoIcon.dataset.swapped = 'true';
         }
 
-        // 5. Add currency selector
         const demoTopSection = document.querySelector('#ddm_balance > div > div.drop-down-modal__in > div > div.balance-item.balance-item--current.balance-item--demo > div.balance-item__top');
         if (demoTopSection) {
             const existingEnd = demoTopSection.querySelector('.balance-item__end');
@@ -878,7 +860,6 @@
             }
         }
 
-        // Relabel demo to real
         function relabel() {
             const demoLabel = document.querySelector('#ddm_balance .balance-item--demo .balance-item__label');
             if (demoLabel && demoLabel.textContent !== 'QT Real') {
@@ -895,7 +876,6 @@
         relabel();
     }
 
-    // Run dropdown modifications
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(modifyDropdown, 500);
@@ -906,10 +886,6 @@
         setInterval(modifyDropdown, 2000);
     }
 
-
-    // ============================================
-    // PROFIT/LOSS TRACKER
-    // ============================================
     function initProfitLossTracker() {
         const log = (...a) => console.log('[PnL]', ...a);
 
@@ -967,13 +943,6 @@
     }
 
     initProfitLossTracker();
-
-    // ============================================
-    // CONSOLE MESSAGE
-    // ============================================
-    console.log('%c🚀 PO Premium - Coder Saurav', 'color: #40E0D0; font-size: 16px; font-weight: bold;');
-    console.log('%c✅ Master Level Active', 'color: #225AAC; font-size: 14px;');
-    console.log('%c📱 Contact: @codersaurav', 'color: #0088cc; font-size: 12px;');
 
     } // End runAllFeatures
 
