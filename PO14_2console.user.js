@@ -342,6 +342,16 @@
     function showLicenseOverlay() {
         if (document.getElementById('pl-license-overlay')) return;
 
+        // Wait for body to be available
+        if (!document.body) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', showLicenseOverlay, { once: true });
+            } else {
+                setTimeout(showLicenseOverlay, 100);
+            }
+            return;
+        }
+
         const overlay = document.createElement('div');
         overlay.id = 'pl-license-overlay';
         overlay.innerHTML = `
